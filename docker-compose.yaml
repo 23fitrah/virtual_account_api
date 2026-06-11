@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile-v1
+    container_name: virtual_account_api-app
+    env_file:
+      - .env
+    environment:
+      - REDIS_HOST=redis
+    ports:
+      - "${PORT}:${PORT}"
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      - redis
+    networks:
+      - sa-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:alpine-
+    container_name: virtual_account_api-redis
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - sa-network
+    restart: always
+
+networks:
+  sa-network:
+    driver: bridge
+
+volumes:
+  redis_data:
