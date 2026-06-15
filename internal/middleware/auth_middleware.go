@@ -52,6 +52,9 @@ func AuthWSMiddleware(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
+		hash := md5.Sum([]byte(payload.Password))
+		md5Hex := strings.ToUpper(hex.EncodeToString(hash[:]))
+
 		user, err := repositories.NewUserRepository().GetUserWS(c, db, payload.Username)
 		if err != nil || user == nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
@@ -61,9 +64,6 @@ func AuthWSMiddleware(db *gorm.DB) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
-		hash := md5.Sum([]byte(payload.Password))
-		md5Hex := strings.ToUpper(hex.EncodeToString(hash[:]))
 
 		if md5Hex != strings.ToUpper(user.Password) {
 			c.JSON(http.StatusUnauthorized, gin.H{

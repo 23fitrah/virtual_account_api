@@ -40,8 +40,7 @@ func NewVirtualAccountService(
 	}
 }
 
-func (s *VirtualAccountService) CreateVA(c *gin.Context, param *validations.CreateVirtualAccountValidation) (resources.GeneralResponse[resources.CreateVAResource], int) {
-	var result resources.CreateVAResource
+func (s *VirtualAccountService) CreateVA(c *gin.Context, param *validations.CreateVAValidation) (resources.GeneralResponse[resources.CreateVAResource], int) {
 	var errRepo error
 	now := time.Now()
 	expiredAt := now.Add(time.Duration(s.cfg.Va.ExpiredHours) * time.Hour)
@@ -49,12 +48,12 @@ func (s *VirtualAccountService) CreateVA(c *gin.Context, param *validations.Crea
 	data := &model.VirtualAccount{
 		ID:           uuid.NewString(),
 		VANumber:     s.generateVANumber(),
-		CustomerID:   param.CustomerID,
-		CustomerName: param.CustomerName,
-		Amount:       param.Amount,
-		Description:  param.Description,
-		Status:       constants.VaStatusPending,
-		ReferenceID:  param.ReferenceID,
+		CustomerID:   param.RequestData.CustomerID,
+		CustomerName: param.RequestData.CustomerName,
+		Amount:       param.RequestData.Amount,
+		Description:  param.RequestData.Description,
+		Status:       1,
+		ReferenceID:  param.RequestData.ReferenceID,
 		ExpiredAt:    expiredAt,
 		CreatedAt:    now,
 		UpdatedAt:    now,
@@ -64,18 +63,21 @@ func (s *VirtualAccountService) CreateVA(c *gin.Context, param *validations.Crea
 	if errRepo != nil {
 		return resources.GeneralResponse[resources.CreateVAResource]{
 			BaseResponse: resources.BaseResponse{
-				StatusCode: constants.CodeErrorSendMidTier,
-				StatusDesc: constants.StatusErrorCustom + errRepo.Error(),
+				Status:       constants.StatusCodeVaFailed,
+				ResponseCode: constants.CodeVaFailed,
+				Message:      constants.StatusErrorCustom + "Create Virtual Account",
+				Errors:       errRepo.Error(),
 			},
 		}, http.StatusInternalServerError
 	}
 
 	return resources.GeneralResponse[resources.CreateVAResource]{
 		BaseResponse: resources.BaseResponse{
-			StatusCode: constants.CodeVaCreate,
-			StatusDesc: constants.StatusGetSuccess,
+			Status:       constants.StatusCodeVaSuccess,
+			ResponseCode: constants.StatusCodeVaCreate,
+			Message:      constants.StatusCreateVASuccess,
 		},
-		Data: result,
+		Data: resources.ToFormModelResource(data),
 	}, http.StatusOK
 }
 
@@ -87,42 +89,45 @@ func (s *VirtualAccountService) GetVAStatus(c *gin.Context, vaNumber string) (re
 	if errRepo != nil {
 		return resources.GeneralResponse[resources.GetVAResource]{
 			BaseResponse: resources.BaseResponse{
-				StatusCode: constants.CodeErrorSendMidTier,
-				StatusDesc: constants.StatusErrorCustom + errRepo.Error(),
+				Status:       constants.StatusCodeVaFailed,
+				ResponseCode: constants.CodeVaFailed,
+				Message:      constants.StatusErrorCustom + errRepo.Error(),
 			},
 		}, http.StatusInternalServerError
 	}
 	return resources.GeneralResponse[resources.GetVAResource]{
 		BaseResponse: resources.BaseResponse{
-			StatusCode: constants.CodeVaGetStatus,
-			StatusDesc: constants.StatusGetSuccess,
+			Status:       constants.StatusCodeVaGetStatus,
+			ResponseCode: constants.CodeVaSuccess,
+			Message:      constants.StatusGetSuccess,
 		},
 		Data: *result,
 	}, http.StatusOK
 }
 
-func (s *VirtualAccountService) GetVA(c *gin.Context, custId string, status string, params utils.PaginationParams) (utils.PaginationResult, int) {
-	var result resources.GetVAListResource
+func (s *VirtualAccountService) GetVA(c *gin.Context, custId string, status string, page, limit, offset int) (utils.PaginatedResponse, int) {
+	var result []*resources.GetVAListResource
 	var errRepo error
-	counterpart := params.Filter["counterpart"]
-	startDate := params.Filter["startDate"]
-	endDate := params.Filter["endDate"]
+	var total int64
 
-	result, errRepo = s.virtualAccountRepository.DoGetVA(c, s.db, custId, status, params)
+	result, total, errRepo = s.virtualAccountRepository.DoGetVA(c, custId, status, limit, offset, s.db)
 	if errRepo != nil {
-		return resources.GeneralResponse[resources.GetVAListResource]{
-			BaseResponse: resources.BaseResponse{
-				StatusCode: constants.CodeErrorSendMidTier,
-				StatusDesc: constants.StatusErrorCustom + errRepo.Error(),
-			},
+		return utils.PaginatedResponse{
+			Status:       constants.StatusCodeVaFailed,
+			ResponseCode: constants.CodeVaFailed,
+			Message:      constants.StatusErrorCustom + errRepo.Error(),
+			Data:         result,
 		}, http.StatusInternalServerError
 	}
-	return resources.GeneralResponse[resources.GetVAListResource]{
-		BaseResponse: resources.BaseResponse{
-			StatusCode: constants.CodeVaGet,
-			StatusDesc: constants.StatusGetSuccess,
-		},
-		Data: result,
+
+	pagination := utils.BuildPagination(page, limit, total)
+
+	return utils.PaginatedResponse{
+		Status:       constants.StatusCodeVaSuccess,
+		ResponseCode: constants.CodeVaSuccess,
+		Message:      constants.StatusGetSuccess,
+		Data:         result,
+		Pagination:   pagination,
 	}, http.StatusOK
 }
 

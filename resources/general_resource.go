@@ -1,14 +1,13 @@
 package resources
 
 type BaseResponse struct {
-	ResponseId   string `json:"responseId"`
-	ErrorCode    string `json:"errorCode"`
-	StatusCode   string `json:"statusCode"`
-	StatusDesc   string `json:"statusDesc"`
-	ResponseTime string `json:"responseTime"`
+	Status       string `json:"status"`
+	ResponseCode string `json:"response_code"`
+	Message      string `json:"message"`
+	Errors       string `json:"errors,omitempty"`
 }
 
 type GeneralResponse[T any] struct {
 	BaseResponse
-	Data T `json:"transactionData,omitempty"`
+	Data T `json:"transaction_data,omitempty"`
 }

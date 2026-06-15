@@ -21,7 +21,7 @@ func NewVirtualAccountHandler(
 }
 
 func (h *VirtualAccountHandler) CreateVA(c *gin.Context) {
-	req, respErr, code := utils.ValidateAndBind[validations.CreateVirtualAccountValidation](c)
+	req, respErr, code := utils.ValidateAndBind[validations.CreateVAValidation](c)
 	if respErr != nil {
 		utils.Responds(c, respErr, code)
 		return
@@ -42,9 +42,10 @@ func (h *VirtualAccountHandler) GetVAStatus(c *gin.Context) {
 func (h *VirtualAccountHandler) GetVA(c *gin.Context) {
 	custId := c.Query("customer_id")
 	status := c.Query("status")
-	params := utils.GetPaginationParams(c)
+	page, limit := utils.GetPaginationParams(c)
+	offset := (page - 1) * limit
 
-	response, respCode := h.virtualAccountService.GetVA(c, custId, status, params)
+	response, respCode := h.virtualAccountService.GetVA(c, custId, status, page, limit, offset)
 
 	utils.Responds(c, response, respCode)
 }

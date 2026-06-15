@@ -10,5 +10,4 @@ import (
 
 var RepositoryProviderSet = wire.NewSet(
 	repositories.NewVirtualAccountRepository,
-	repositories.NewWaitingConfirmationRepository,
 )

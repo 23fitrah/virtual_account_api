@@ -2,43 +2,51 @@ package constants
 
 const (
 	// Succes Code VA
-	CodeVaCreate    = "VA_CREATED"
-	CodeVaFound     = "VA_FOUND"
-	CodeVaGetStatus = "VA_GET_STATUS"
-	CodeVaGet       = "VA_GET_SUCCESS"
+	StatusCodeVaCreate    = "VA_CREATED"
+	StatusCodeVaFound     = "VA_FOUND"
+	StatusCodeVaGetStatus = "VA_GET_STATUS"
+	StatusCodeVaGet       = "VA_GET_SUCCESS"
+	StatusCodeVaSuccess   = "VA_SUCCESS"
+	StatusCodeVaFailed    = "VA_FAILED"
+	CodeVaSuccess         = "VA-0000"
+	CodeVaFailed          = "VA-0004"
+
 	//Success Code Payment
-	CodePaymentReceived         = "PAYMENT_SUCCESS"
-	CodePaymentAlreadyProcessed = "PAYMENT_ALREADY_PROCESSED"
+	StatusCodePaymentReceived         = "PAYMENT_SUCCESS"
+	StatusCodePaymentAlreadyProcessed = "PAYMENT_ALREADY_PROCESSED"
 
 	// Error Code VA
-	CodeVaNotFound      = "VA_NOT_FOUND"
-	CodeVaAlreadyExists = "VA_ALREADY_EXISTS"
-	CodeVaInactive      = "VA_INACTIVE"
-	CodeVaExpired       = "VA_EXPIRED"
-	CodeVaCancelled     = "VA_CANCELLED"
-	CodeVaAlreadyPaid   = "VA_ALREADY_PAID"
+	StatusCodeVaNotFound      = "VA_NOT_FOUND"
+	StatusCodeVaAlreadyExists = "VA_ALREADY_EXISTS"
+	StatusCodeVaInactive      = "VA_INACTIVE"
+	StatusCodeVaExpired       = "VA_EXPIRED"
+	StatusCodeVaCancelled     = "VA_CANCELLED"
+	StatusCodeVaAlreadyPaid   = "VA_ALREADY_PAID"
 
 	// Error Merchant
-	CodeMerchantNotFound  = "MERCHANT_NOT_FOUND"
-	CodeMerchantInactive  = "MERCHANT_INACTIVE"
-	CodeDuplicateMerchant = "DUPLICATE_CUSTOMER_REFERENCE"
+	StatusCodeMerchantNotFound  = "MERCHANT_NOT_FOUND"
+	StatusCodeMerchantInactive  = "MERCHANT_INACTIVE"
+	StatusCodeDuplicateMerchant = "DUPLICATE_CUSTOMER_REFERENCE"
 
 	//Error Payment
-	CodePaymentFailed    = "PAYMENT_FAILED"
-	CodeAmountMismatch   = "AMOUNT_MISMATCH"
-	CodePaymentInvalid   = "INVALID_PAYMENT_STATUS"
-	CodeDuplicatePayment = "PAYMENT_REFERENCE_DUPLICATE"
+	StatusCodePaymentFailed    = "PAYMENT_FAILED"
+	StatusCodeAmountMismatch   = "AMOUNT_MISMATCH"
+	StatusCodePaymentInvalid   = "INVALID_PAYMENT_STATUS"
+	StatusCodeDuplicatePayment = "PAYMENT_REFERENCE_DUPLICATE"
 
 	//Error General
-	CodeAuthenticationFailed = "AUTHENTICATION_FAILED"
-	CodeAuthorizationFailed  = "AUTHORIZATION_FAILED"
-	CodeBadRequest           = "BAD_REQUEST"
-	CodeInternalServerError  = "INTERNAL_SERVER_ERROR"
-	CodeServiceUnavailable   = "SERVICE_UNAVAILABLE"
-	CodeTransactionFailed    = "TRANSACTION_FAILED"
+	StatusCodeAuthenticationFailed = "AUTHENTICATION_FAILED"
+	StatusCodeAuthorizationFailed  = "AUTHORIZATION_FAILED"
+	StatusCodeBadRequest           = "BAD_REQUEST"
+	StatusCodeInternalServerError  = "INTERNAL_SERVER_ERROR"
+	StatusCodeServiceUnavailable   = "SERVICE_UNAVAILABLE"
+	StatusCodeTransactionFailed    = "TRANSACTION_FAILED"
 
-	CodeFailedToProcess  = "0004"
+	StatuCodeFailedToProcess   = "VA-0004"
+	StatusCodeErrorSendMidTier = "VA-0002"
+
+	CodeTransactionSuccess = "VA-0000"
+
+	CodeEndpointNotFound = "0004"
 	CodeErrorSendMidTier = "0002"
-
-	CodeTransactionSuccess = "00"
 )

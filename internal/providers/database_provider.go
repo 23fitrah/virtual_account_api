@@ -3,8 +3,8 @@
 package providers
 
 import (
-	"virtual_account_api/config"
 	"time"
+	"virtual_account_api/config"
 
 	"github.com/google/wire"
 )
@@ -24,4 +24,5 @@ var DatabaseProviderSet = wire.NewSet(
 	config.Load,
 	ProvideESConfig,
 	config.NewElasticsearchConnection,
+	config.LoadVA,
 )

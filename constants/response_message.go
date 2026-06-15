@@ -9,8 +9,11 @@ const (
 	ContextKeyMenu            = "menu"
 
 	// Success
-	StatusGetSuccess         = "Get Data Success"
-	StatusGetCurrencysuccess = "Get Currency Success"
+	StatusGetSuccess              = "Get Data Success"
+	StatusGetCurrencysuccess      = "Get Currency Success"
+	StatusCreateVASuccess         = "Create VA Success"
+	StatusPaymentSuccess          = "Payment Success"
+	StatusPaymentAlreadyProcessed = "Payment Already Processed"
 
 	// Generic prefixes
 	StatusPrefixSuccess = "[Success]"

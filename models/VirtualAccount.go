@@ -10,7 +10,7 @@ type VirtualAccount struct {
 	Amount       float64   `gorm:"column:AMOUNT"`
 	ExpiredAt    time.Time `gorm:"column:EXPIRED_AT"`
 	Description  string    `gorm:"column:DESCRIPTION"`
-	Status       string    `gorm:"column:STATUS"`
+	Status       int       `gorm:"column:STATUS"`
 	Action       string    `gorm:"column:ACTION"`
 	ReferenceID  string    `gorm:"column:REFERENCE_ID"`
 	PaidAt       time.Time `gorm:"column:PAID_AT"`

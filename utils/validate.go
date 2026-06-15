@@ -47,8 +47,8 @@ func ValidateAndBind[T any](c *gin.Context) (*T, *resources.GeneralResponse[any]
 		fmt.Println("Error binding request:", err)
 		return nil, &resources.GeneralResponse[any]{
 			BaseResponse: resources.BaseResponse{
-				StatusCode: constants.CodeErrorSendMidTier,
-				StatusDesc: constants.StatusIncompleteData,
+				ResponseCode: constants.CodeErrorSendMidTier,
+				Message:      constants.StatusIncompleteData,
 			},
 		}, http.StatusBadRequest
 	}
@@ -59,8 +59,8 @@ func ValidateAndBind[T any](c *gin.Context) (*T, *resources.GeneralResponse[any]
 		for _, e := range err.(validator.ValidationErrors) {
 			return nil, &resources.GeneralResponse[any]{
 				BaseResponse: resources.BaseResponse{
-					StatusCode: constants.CodeErrorSendMidTier,
-					StatusDesc: constants.StatusErrorCustom + validationMsg(e),
+					ResponseCode: constants.CodeErrorSendMidTier,
+					Message:      constants.StatusErrorCustom + validationMsg(e),
 				},
 			}, http.StatusBadRequest
 		}
@@ -69,8 +69,8 @@ func ValidateAndBind[T any](c *gin.Context) (*T, *resources.GeneralResponse[any]
 	if err := validateAllFileFields(&req); err != nil {
 		return nil, &resources.GeneralResponse[any]{
 			BaseResponse: resources.BaseResponse{
-				StatusCode: constants.CodeErrorSendMidTier,
-				StatusDesc: constants.StatusErrorCustom + err.Error(),
+				ResponseCode: constants.CodeErrorSendMidTier,
+				Message:      constants.StatusErrorCustom + err.Error(),
 			},
 		}, http.StatusBadRequest
 	}

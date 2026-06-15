@@ -4,12 +4,12 @@ import (
 	"context"
 	"net/http"
 	"os"
+	"time"
 	"virtual_account_api/constants"
 	"virtual_account_api/internal/injector"
 	"virtual_account_api/internal/middleware"
 	"virtual_account_api/resources"
 	"virtual_account_api/utils"
-	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -32,8 +32,8 @@ func SetupRouter(ct *injector.AppContainer) *gin.Engine {
 
 	r.NoRoute(func(c *gin.Context) {
 		utils.Responds(c, resources.BaseResponse{
-			StatusCode: constants.CodeFailedToProcess,
-			StatusDesc: constants.StatusEndpointNotFound,
+			ResponseCode: constants.CodeEndpointNotFound,
+			Message:      constants.StatusEndpointNotFound,
 		}, http.StatusNotFound)
 	})
 
@@ -41,8 +41,8 @@ func SetupRouter(ct *injector.AppContainer) *gin.Engine {
 
 	r.GET("/", func(c *gin.Context) {
 		utils.Responds(c, resources.BaseResponse{
-			StatusCode: constants.CodeTransactionSuccess,
-			StatusDesc: constants.StatusGetSuccess,
+			ResponseCode: constants.CodeTransactionSuccess,
+			Message:      constants.StatusGetSuccess,
 		}, http.StatusOK)
 		return
 	})

@@ -1,7 +1,11 @@
 package validations
 
-type CreateVirtualAccountValidation struct {
+type CreateVAValidation struct {
 	UserValidation
+	RequestData FormVAValidation `json:"request_data" validate:"required"`
+}
+
+type FormVAValidation struct {
 	CustomerID   string  `json:"customer_id" validate:"required"`
 	CustomerName string  `json:"customer_name" validate:"required"`
 	Amount       float64 `json:"amount" validate:"required"`
@@ -10,7 +14,7 @@ type CreateVirtualAccountValidation struct {
 }
 
 type DataVirtualAccountValidation struct {
-	CreateVirtualAccountValidation
+	CreateVAValidation
 	IdVa           string  `json:"idVa" validate:"required"`
 	MerchantNumber string  `json:"merchantNumber" validate:"required"`
 	CustReference  string  `json:"customerReference" validate:"required"`
