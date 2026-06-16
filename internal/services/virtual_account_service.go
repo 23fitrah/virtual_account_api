@@ -70,14 +70,14 @@ func (s *VirtualAccountService) CreateVA(c *gin.Context, param *validations.Crea
 			},
 		}, http.StatusInternalServerError
 	}
-
+	vaData := resources.ToFormModelResource(data)
 	return resources.GeneralResponse[resources.CreateVAResource]{
 		BaseResponse: resources.BaseResponse{
 			Status:       constants.StatusCodeVaSuccess,
 			ResponseCode: constants.StatusCodeVaCreate,
 			Message:      constants.StatusCreateVASuccess,
 		},
-		Data: resources.ToFormModelResource(data),
+		Data: &vaData,
 	}, http.StatusOK
 }
 
@@ -91,17 +91,18 @@ func (s *VirtualAccountService) GetVAStatus(c *gin.Context, vaNumber string) (re
 			BaseResponse: resources.BaseResponse{
 				Status:       constants.StatusCodeVaFailed,
 				ResponseCode: constants.CodeVaFailed,
-				Message:      constants.StatusErrorCustom + errRepo.Error(),
+				Message:      constants.StatusErrorCustom + "Get Virtual Account Status",
+				Errors:       errRepo.Error(),
 			},
 		}, http.StatusInternalServerError
 	}
 	return resources.GeneralResponse[resources.GetVAResource]{
 		BaseResponse: resources.BaseResponse{
-			Status:       constants.StatusCodeVaGetStatus,
+			Status:       constants.StatusCodeVaSuccess,
 			ResponseCode: constants.CodeVaSuccess,
 			Message:      constants.StatusGetSuccess,
 		},
-		Data: *result,
+		Data: result,
 	}, http.StatusOK
 }
 
@@ -115,7 +116,8 @@ func (s *VirtualAccountService) GetVA(c *gin.Context, custId string, status stri
 		return utils.PaginatedResponse{
 			Status:       constants.StatusCodeVaFailed,
 			ResponseCode: constants.CodeVaFailed,
-			Message:      constants.StatusErrorCustom + errRepo.Error(),
+			Message:      constants.StatusErrorCustom + "Get Virtual Account",
+			Errors:       errRepo.Error(),
 			Data:         result,
 		}, http.StatusInternalServerError
 	}

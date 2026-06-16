@@ -1,16 +1,11 @@
 /.idea
-
 .env
 dump.rdb
-
 /internal/injector/wire_gen.go
-
 /tmp
 /cmd/tmp
-
 test.http
 main.exe
-
 *.tar
 *.zip
 vendor.zip

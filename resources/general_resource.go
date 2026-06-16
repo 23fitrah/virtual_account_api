@@ -9,5 +9,5 @@ type BaseResponse struct {
 
 type GeneralResponse[T any] struct {
 	BaseResponse
-	Data T `json:"transaction_data,omitempty"`
+	Data *T `json:"transaction_data,omitempty"`
 }

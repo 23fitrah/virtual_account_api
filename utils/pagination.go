@@ -18,6 +18,7 @@ type PaginatedResponse struct {
 	Status       string         `json:"status"`
 	ResponseCode string         `json:"responseCode"`
 	Message      string         `json:"message"`
+	Errors       interface{}    `json:"errors,omitempty"`
 	Data         interface{}    `json:"data"`
 	Pagination   PaginationMeta `json:"pagination"`
 }

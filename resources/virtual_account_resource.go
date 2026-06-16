@@ -6,14 +6,11 @@ import (
 )
 
 type GetVAResource struct {
-	*DataGetVAStatus
-}
-type DataGetVAStatus struct {
-	Id        string `json:"id"`
-	VANumber  string `json:"va_number"`
-	Status    string `json:"status"`
-	Amount    string `json:"amount"`
-	ExpiredAt string `json:"expired_at"`
+	Id         string `json:"id"`
+	VANumber   string `json:"va_number"`
+	StatusName string `json:"status_name"`
+	Amount     string `json:"amount"`
+	ExpiredAt  string `json:"expired_at"`
 }
 
 type CreateVAResource struct {
@@ -52,12 +49,13 @@ type GetVAListResource struct {
 	CustomerName string `json:"customer_name"`
 	Amount       string `json:"amount"`
 	Description  string `json:"description"`
-	Status       string `json:"status"`
+	Status       string `json:"status,omitempty"`
 	ReferenceId  string `json:"reference_id"`
 	ExpiredAt    string `json:"expired_at"`
 	PaidAt       string `json:"paid_at"`
 	CreatedAt    string `json:"created_at"`
 	UpdatedAt    string `json:"updated_at"`
+	StatusName   string `json:"status_name"`
 }
 
 func ToFormModelResource(data *models.VirtualAccount) CreateVAResource {

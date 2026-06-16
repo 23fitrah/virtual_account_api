@@ -44,7 +44,8 @@ func (r *VirtualAccountRepository) DoCreateVA(c context.Context, data *modelVa.V
 
 func (r *VirtualAccountRepository) DoGetVAStatus(c context.Context, vaNumber string, db *gorm.DB) (*resources.GetVAResource, error) {
 	var va resources.GetVAResource
-	err := db.WithContext(c).Where("va_number = ?", vaNumber).First(&va).Error
+	err := db.WithContext(c).Table("virtual_accounts va").Select("va.*,vs.status as status_name").Joins("JOIN status_va vs ON vs.id_status = va.status").
+		Where("va_number = ?", vaNumber).First(&va).Error
 	if err != nil {
 		return nil, err
 	}
@@ -61,16 +62,16 @@ func (r *VirtualAccountRepository) DoGetVA(c context.Context, custId, status str
 			CUSTOMER_ID,
 			CUSTOMER_NAME,
 			AMOUNT,
-			EXPIRED_AT,
 			DESCRIPTION,
-			STATUS,
-			ACTION,
+			EXPIRED_AT,
 			REFERENCE_ID,
-			PAID_AT,
+			ISNULL(PAID_AT, '') as PAID_AT,
 			CREATED_AT,
-			UPDATED_AT
+			UPDATED_AT,
+			status_va.STATUS as status_name
 		FROM 
-			visrtual_accounts WITH (NOLOCK)
+			virtual_accounts 
+			JOIN status_va ON status_va.id_status = virtual_accounts.status
 		WHERE 
 			1=1 `
 
@@ -84,7 +85,7 @@ func (r *VirtualAccountRepository) DoGetVA(c context.Context, custId, status str
 	}
 
 	if status != "" {
-		query = query + " AND STATUS = @p" + strconv.Itoa(paramIdx)
+		query = query + " AND status_va.STATUS = @p" + strconv.Itoa(paramIdx)
 		args = append(args, status)
 		paramIdx++
 	}
@@ -95,7 +96,7 @@ func (r *VirtualAccountRepository) DoGetVA(c context.Context, custId, status str
 		return nil, 0, fmt.Errorf("count transaction: %w", result.Error)
 	}
 
-	query += " ORDER BY ROWID_TRX DESC"
+	query += " ORDER BY ID DESC"
 
 	if limit != -1 {
 		query += fmt.Sprintf("  OFFSET @p%d ROWS FETCH NEXT @p%d ROWS ONLY", paramIdx, paramIdx+1)
@@ -127,12 +128,12 @@ func (r *VirtualAccountRepository) DoGetVA(c context.Context, custId, status str
 			&va.CustomerName,
 			&va.Amount,
 			&va.Description,
-			&va.Status,
-			&va.ReferenceId,
 			&va.ExpiredAt,
+			&va.ReferenceId,
 			&va.PaidAt,
 			&va.CreatedAt,
-			&va.UpdatedAt)
+			&va.UpdatedAt,
+			&va.StatusName)
 		if err != nil {
 			return nil, 0, fmt.Errorf("scan transaction row failed: %w", err)
 		}
