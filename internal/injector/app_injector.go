@@ -19,6 +19,7 @@ type AppContainer struct {
 	RedisClient           *redis.Client
 	ValidationUtils       *utils.ValidationUtils
 	VirtualAccountHandler *handlers.VirtualAccountHandler
+	PaymentHandler        *handlers.PaymentHandler
 }
 
 // NewAppContainer creates an AppContainer with all dependencies
@@ -27,13 +28,13 @@ func NewAppContainer(
 	redisClient *redis.Client,
 	validationUtils *utils.ValidationUtils,
 	virtualAccountHandler *handlers.VirtualAccountHandler,
-
+	paymentHandler *handlers.PaymentHandler,
 ) *AppContainer {
 	return &AppContainer{
-		DB:              db,
-		RedisClient:     redisClient,
-		ValidationUtils: validationUtils,
-
+		DB:                    db,
+		RedisClient:           redisClient,
+		ValidationUtils:       validationUtils,
+		PaymentHandler:        paymentHandler,
 		VirtualAccountHandler: virtualAccountHandler,
 	}
 }

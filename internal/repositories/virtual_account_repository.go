@@ -85,14 +85,19 @@ func (r *VirtualAccountRepository) DoGetVA(c context.Context, custId, status str
 	}
 
 	if status != "" {
-		query = query + " AND status_va.STATUS = @p" + strconv.Itoa(paramIdx)
+		query = query + " AND virtual_accounts.STATUS = @p" + strconv.Itoa(paramIdx)
 		args = append(args, status)
 		paramIdx++
 	}
 
+	SqlDB, err := db.DB()
+	if err != nil {
+		return nil, 0, fmt.Errorf("get db connection failed: %w", err)
+	}
+
 	var total int64
-	result := db.WithContext(c).Raw(`SELECT COUNT(*) FROM (`+query+`) AS tb`, args...).Scan(&total)
-	if result.Error != nil {
+	result := SqlDB.QueryRowContext(c, `SELECT COUNT(*) FROM (`+query+`) AS tb`, args...).Scan(&total)
+	if result != nil {
 		return nil, 0, fmt.Errorf("count transaction: %w", result.Error)
 	}
 
@@ -104,10 +109,6 @@ func (r *VirtualAccountRepository) DoGetVA(c context.Context, custId, status str
 	args = append(args, offset)
 	args = append(args, limit)
 
-	SqlDB, err := db.DB()
-	if err != nil {
-		return nil, 0, fmt.Errorf("get db connection failed: %w", err)
-	}
 	sqlRows, err := SqlDB.QueryContext(c, query, args...)
 
 	if err != nil {

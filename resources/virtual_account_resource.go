@@ -39,7 +39,7 @@ type DataVAStatus struct {
 }
 
 type ListVAResource struct {
-	Data []GetVAListResource `json:"data"`
+	Data []GetVAListResource `json:"payload"`
 }
 
 type GetVAListResource struct {

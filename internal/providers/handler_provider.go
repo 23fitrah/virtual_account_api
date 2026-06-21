@@ -10,4 +10,5 @@ import (
 
 var HandlerProviderSet = wire.NewSet(
 	handlers.NewVirtualAccountHandler,
+	handlers.NewPaymentHandler,
 )

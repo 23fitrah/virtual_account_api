@@ -34,6 +34,13 @@ func (h *VirtualAccountHandler) CreateVA(c *gin.Context) {
 
 func (h *VirtualAccountHandler) GetVAStatus(c *gin.Context) {
 	vaNumber := c.Param("va_number")
+
+	_, respErr, code := utils.ValidateAndBind[validations.GetVAStatusValidation](c)
+	if respErr != nil {
+		utils.Responds(c, respErr, code)
+		return
+	}
+
 	response, respCode := h.virtualAccountService.GetVAStatus(c, vaNumber)
 
 	utils.Responds(c, response, respCode)
@@ -45,6 +52,11 @@ func (h *VirtualAccountHandler) GetVA(c *gin.Context) {
 	page, limit := utils.GetPaginationParams(c)
 	offset := (page - 1) * limit
 
+	_, respErr, code := utils.ValidateAndBind[validations.GetVAValidation](c)
+	if respErr != nil {
+		utils.Responds(c, respErr, code)
+		return
+	}
 	response, respCode := h.virtualAccountService.GetVA(c, custId, status, page, limit, offset)
 
 	utils.Responds(c, response, respCode)

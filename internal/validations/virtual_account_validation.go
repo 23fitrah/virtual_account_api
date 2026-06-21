@@ -2,7 +2,7 @@ package validations
 
 type CreateVAValidation struct {
 	UserValidation
-	RequestData FormVAValidation `json:"request_data" validate:"required"`
+	RequestData FormVAValidation `json:"payload" validate:"required"`
 }
 
 type FormVAValidation struct {
@@ -21,4 +21,12 @@ type DataVirtualAccountValidation struct {
 	Amount         float64 `json:"amount" validate:"required"`
 	Status         string  `json:"status" validate:"required"`
 	ExpiredAt      string  `json:"expiredAt" validate:"required"`
+}
+
+type GetVAValidation struct {
+	UserValidation
+}
+
+type GetVAStatusValidation struct {
+	UserValidation
 }

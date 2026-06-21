@@ -14,6 +14,9 @@ const (
 	//Success Code Payment
 	StatusCodePaymentReceived         = "PAYMENT_SUCCESS"
 	StatusCodePaymentAlreadyProcessed = "PAYMENT_ALREADY_PROCESSED"
+	CodePaymentSuccess                = "PY-0000"
+	CodePaymentAlreadyProcessed       = "PY-0001"
+	CodePaymentFailed                 = "PY-0004"
 
 	// Error Code VA
 	StatusCodeVaNotFound      = "VA_NOT_FOUND"
@@ -47,6 +50,7 @@ const (
 
 	CodeTransactionSuccess = "VA-0000"
 
-	CodeEndpointNotFound = "0004"
-	CodeErrorSendMidTier = "0002"
+	CodeEndpointNotFound  = "0004"
+	CodeErrorSendMidTier  = "0002"
+	StatusErrorValidation = "VALIDATION_ERROR"
 )

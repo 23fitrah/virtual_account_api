@@ -47,6 +47,7 @@ func ValidateAndBind[T any](c *gin.Context) (*T, *resources.GeneralResponse[any]
 		fmt.Println("Error binding request:", err)
 		return nil, &resources.GeneralResponse[any]{
 			BaseResponse: resources.BaseResponse{
+				Status:       constants.StatusErrorValidation,
 				ResponseCode: constants.CodeErrorSendMidTier,
 				Message:      constants.StatusIncompleteData,
 			},

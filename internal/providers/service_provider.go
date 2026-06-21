@@ -10,4 +10,5 @@ import (
 
 var ServiceProviderSet = wire.NewSet(
 	services.NewVirtualAccountService,
+	services.NewPaymentService,
 )
