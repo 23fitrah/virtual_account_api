@@ -112,14 +112,8 @@ Internal System -> Customer : Send Payment Confirmation
 - processed_at
 - status
 
-**Table: orders**
-- id
-- customer_id
-- total_amount
-- status
-- created_at
 
-## 11. API List (Contoh)
+## 11. API List
 
 | Method | Endpoint | Deskripsi |
 |---|---|---|
@@ -134,7 +128,7 @@ Internal System -> Customer : Send Payment Confirmation
 - Format dan struktur callback payload mengikuti standar dari masing-masing bank
 - Proses settlement dana ke rekening merchant dilakukan oleh pihak bank, di luar tanggung jawab sistem internal
 
-## 13. Tech Stack (Contoh)
+## 13. Tech Stack
 
 - Backend: Golang / C# .NET / Laravel-Lumen
 - Database: PostgreSQL / MySQL
