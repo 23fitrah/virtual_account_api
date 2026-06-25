@@ -21,9 +21,5 @@ func RegisterV1Router(rg *gin.RouterGroup, ct *injector.AppContainer) {
 	v1.POST("/payments", ct.PaymentHandler.CallbackPayment)
 
 	v1.POST("/payments/history", ct.PaymentHandler.GetPaymentHistory)
-	/*	payment := v1.Group("/payments")
-		{
-			payment.POST("/process", ct.DataMt199Handler.Detail)
-			payment.POST("/history", ct.DataMt199Handler.ClosePending)
-		}*/
+
 }

@@ -12,7 +12,7 @@ const (
 	CodeVaFailed          = "VA-0004"
 
 	//Success Code Payment
-	StatusCodePaymentReceived         = "PAYMENT_SUCCESS"
+	StatusCodePaymentSuccess          = "PAYMENT_SUCCESS"
 	StatusCodePaymentAlreadyProcessed = "PAYMENT_ALREADY_PROCESSED"
 	CodePaymentSuccess                = "PY-0000"
 	CodePaymentAlreadyProcessed       = "PY-0001"

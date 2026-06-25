@@ -50,7 +50,10 @@ const (
 	StatusFailedInsertOCServiceLog              = "[FAILED] Failed to insert oc-service log async"
 	StatusFailedAudit                           = "[FAILED] Failed to insert audit"
 	StatusWarningAuditLogFull                   = "[WARNING] Audit Log Buffer Full - Dropping HistoryLog"
+	StatusInvalidAuthCredential                 = "[Failed] Invalid Credential"
+	StatusInvalidAuthEncoding                   = "[Failed] Invalid Authorize Encoding"
 
 	// Generic fallback
 	StatusUnknown = "Unknown Status"
+	StatusUnAuth  = "Unknown Unauthorize"
 )

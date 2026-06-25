@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   app:
@@ -17,23 +16,23 @@ services:
     depends_on:
       - redis
     networks:
-      - sa-network
+      - va-network
     restart: unless-stopped
 
   redis:
-    image: redis:alpine-
+    image: redis:alpine
     container_name: virtual_account_api-redis
     ports:
       - "${REDIS_PORT}:6379"
     volumes:
-      - redis_data:/data
+      - redis_data:/data/redis
     networks:
-      - sa-network
-    restart: always
+      - va-network
+    restart: unless-stopped
 
 networks:
-  sa-network:
+  va-network:
     driver: bridge
 
 volumes:
-  redis_data:
+  redis_data:local

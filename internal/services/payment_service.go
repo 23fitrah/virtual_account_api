@@ -125,9 +125,9 @@ func (s *PaymentService) CallbackPayment(c *gin.Context, param *validations.Call
 	if errRepo != nil {
 		return resources.GeneralResponse[resources.CreatePaymentResource]{
 			BaseResponse: resources.BaseResponse{
-				Status:       constants.StatusCodeVaFailed,
-				ResponseCode: constants.CodeVaFailed,
-				Message:      constants.StatusErrorCustom + "Create Virtual Account",
+				Status:       constants.StatusCodePaymentFailed,
+				ResponseCode: constants.CodePaymentFailed,
+				Message:      constants.StatusErrorCustom + "Create Payment",
 				Errors:       errRepo.Error(),
 			},
 		}, http.StatusInternalServerError
@@ -135,9 +135,9 @@ func (s *PaymentService) CallbackPayment(c *gin.Context, param *validations.Call
 	paymentData := resources.ToFormModelPaymentResource(data)
 	return resources.GeneralResponse[resources.CreatePaymentResource]{
 		BaseResponse: resources.BaseResponse{
-			Status:       constants.StatusCodeVaSuccess,
-			ResponseCode: constants.StatusCodeVaCreate,
-			Message:      constants.StatusCreateVASuccess,
+			Status:       constants.StatusCodePaymentSuccess,
+			ResponseCode: constants.CodePaymentSuccess,
+			Message:      constants.StatusPaymentSuccess,
 		},
 		Data: &paymentData,
 	}, http.StatusOK
@@ -176,9 +176,9 @@ func (s *PaymentService) GetPaymentHistory(c *gin.Context, vaNumber string, page
 	result, total, errRepo = s.paymentRepository.DoGetPaymentHistory(c, vaNumber, limit, offset, s.db)
 	if errRepo != nil {
 		return utils.PaginatedResponse{
-			Status:       constants.StatusCodeVaFailed,
-			ResponseCode: constants.CodeVaFailed,
-			Message:      constants.StatusErrorCustom + "Get Virtual Account",
+			Status:       constants.StatusCodePaymentFailed,
+			ResponseCode: constants.CodePaymentFailed,
+			Message:      constants.StatusErrorCustom + "Get Payment History",
 			Errors:       errRepo.Error(),
 			Data:         result,
 		}, http.StatusInternalServerError

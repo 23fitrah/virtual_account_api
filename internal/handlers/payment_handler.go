@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"virtual_account_api/constants"
 	"virtual_account_api/internal/services"
 	"virtual_account_api/internal/validations"
 	"virtual_account_api/utils"
@@ -21,6 +22,8 @@ func NewPaymentHandler(
 }
 
 func (h *PaymentHandler) CallbackPayment(c *gin.Context) {
+	c.Set(constants.ContextKeyMenu, "Payment Callback")
+
 	req, respErr, code := utils.ValidateAndBind[validations.CallbackPaymentValidation](c)
 	if respErr != nil {
 		utils.Responds(c, respErr, code)
@@ -32,21 +35,9 @@ func (h *PaymentHandler) CallbackPayment(c *gin.Context) {
 	utils.Responds(c, response, respCode)
 }
 
-func (h *PaymentHandler) GetVAStatus(c *gin.Context) {
-	vaNumber := c.Param("va_number")
-
-	_, respErr, code := utils.ValidateAndBind[validations.GetVAStatusValidation](c)
-	if respErr != nil {
-		utils.Responds(c, respErr, code)
-		return
-	}
-
-	response, respCode := h.paymentService.GetVAStatus(c, vaNumber)
-
-	utils.Responds(c, response, respCode)
-}
-
 func (h *PaymentHandler) GetPaymentHistory(c *gin.Context) {
+	c.Set(constants.ContextKeyMenu, "Payment History")
+
 	vaNumber := c.Query("va_number")
 	page, limit := utils.GetPaginationParams(c)
 	offset := (page - 1) * limit

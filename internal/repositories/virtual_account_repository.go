@@ -143,3 +143,13 @@ func (r *VirtualAccountRepository) DoGetVA(c context.Context, custId, status str
 
 	return results, total, nil
 }
+
+func (r *VirtualAccountRepository) CheckRefId(c context.Context, refid string, db *gorm.DB) (int64, error) {
+	var count int64
+	err := db.WithContext(c).Table("virtual_accounts").
+		Where("reference_id = ?", refid).Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}

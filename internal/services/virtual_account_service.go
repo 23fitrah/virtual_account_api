@@ -45,6 +45,28 @@ func (s *VirtualAccountService) CreateVA(c *gin.Context, param *validations.Crea
 	now := time.Now()
 	expiredAt := now.Add(time.Duration(s.cfg.Va.ExpiredHours) * time.Hour)
 
+	total, errRepo := s.virtualAccountRepository.CheckRefId(c, param.RequestData.ReferenceID, s.db)
+	if errRepo != nil {
+		return resources.GeneralResponse[resources.CreateVAResource]{
+			BaseResponse: resources.BaseResponse{
+				Status:       constants.StatusCodeVaFailed,
+				ResponseCode: constants.CodeVaFailed,
+				Message:      constants.StatusErrorCustom + "Create Virtual Account",
+				Errors:       errRepo.Error(),
+			},
+		}, http.StatusInternalServerError
+	}
+
+	if total > 0 {
+		return resources.GeneralResponse[resources.CreateVAResource]{
+			BaseResponse: resources.BaseResponse{
+				Status:       constants.StatusCodeVaFailed,
+				ResponseCode: constants.CodeVaFailed,
+				Message:      "Reference ID Already Exists",
+			},
+		}, http.StatusBadRequest
+	}
+
 	data := &model.VirtualAccount{
 		ID:           uuid.NewString(),
 		VANumber:     s.generateVANumber(),
@@ -74,7 +96,7 @@ func (s *VirtualAccountService) CreateVA(c *gin.Context, param *validations.Crea
 	return resources.GeneralResponse[resources.CreateVAResource]{
 		BaseResponse: resources.BaseResponse{
 			Status:       constants.StatusCodeVaSuccess,
-			ResponseCode: constants.StatusCodeVaCreate,
+			ResponseCode: constants.CodeVaSuccess,
 			Message:      constants.StatusCreateVASuccess,
 		},
 		Data: &vaData,
@@ -138,4 +160,9 @@ func (s *VirtualAccountService) generateVANumber() string {
 	ts := time.Now().Format("20060102150405")
 	rnd := fmt.Sprintf("%04d", rand.Intn(10000))
 	return s.cfg.Va.Prefix + ts + rnd
+}
+
+func (s *VirtualAccountService) CheckRefId(c *gin.Context, refid string) (int64, error) {
+	result, err := s.virtualAccountRepository.CheckRefId(c, refid, s.db)
+	return result, err
 }

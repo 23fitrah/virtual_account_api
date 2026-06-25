@@ -48,25 +48,9 @@ func AuditMiddleware(db *gorm.DB) gin.HandlerFunc {
 				IpAddress:       ip,
 			}
 
-			ocServiceLog := models.OCServiceLog{
-				Timestamp:       time.Now().Local(),
-				UserID:          u,
-				Menu:            menuStr,
-				Action:          m,
-				NewValue:        newStr,
-				OldValue:        oldStr,
-				ResponseMessage: rspStr,
-				IpClient:        ip,
-			}
-
 			err := utils.InsertHistoryLog(c, db, historyLog)
 			if err != nil {
 				utils.LogError(constants.StatusFailedInsertHistoryLog, err)
-			}
-
-			err = utils.InsertOCSserviceLog(c, db, ocServiceLog)
-			if err != nil {
-				utils.LogError(constants.StatusFailedInsertOCServiceLog, err)
 			}
 
 		}(oldVal, newVal, respMsg, menu, userStr, path, method, clientIP)
