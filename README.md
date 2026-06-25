@@ -100,7 +100,7 @@ Internal System -> Customer : Send Payment Confirmation
 - va_number
 - bank_code
 - amount
-- status (PENDING, PAID, EXPIRED)
+- status (PENDING, PAID, EXPIRED) x
 - expired_at
 - created_at
 
