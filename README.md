@@ -63,8 +63,8 @@ RESTful API for managing Virtual Account transactions, built with Golang using a
 ### Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/virtual-account-api.git
-cd virtual-account-api
+git clone https://github.com/yourusername/virtual_account_api.git
+cd virtual_account_api
 ```
 
 ### Install Dependencies
