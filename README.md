@@ -78,12 +78,27 @@ go mod tidy
 Create a `.env` file.
 
 ```env
-APP_PORT=8080
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=virtual_account
-DB_USER=postgres
-DB_PASSWORD=password
+APP_ENV=
+PORT=
+DB_HOST=
+DB_PORT=
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+LOG_LEVEL=
+ES_URL=
+ES_USER=
+ES_PASS=
+ES_ENABLED=
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=
+REDIS_DB=0
+KIBANA_URL_SA=
+VA_PREFIX=8808
+VA_EXPIRED_HOURS=24
+BASIC_AUTH_USERNAME=
+BASIC_AUTH_PASSWORD=
 ```
 
 ### Run Application
@@ -112,10 +127,10 @@ go test ./... -cover
 
 ## API Documentation
 
-If Swagger is enabled:
+Using Postman:
 
 ```
-http://localhost:8080/swagger/index.html
+http://localhost:9090/api/v1/virtual-accounts/create
 ```
 
 ## Sample Request
@@ -127,10 +142,16 @@ Content-Type: application/json
 
 ```json
 {
-  "customer_name": "John Doe",
-  "bank_code": "014",
-  "amount": 250000,
-  "expired_at": "2026-12-31T23:59:59Z"
+    "username": "your_username",
+    "password": "your_password",
+    "channel": "channel",
+    "payload": {
+        "customer_id": "CUST-001",
+        "customer_name": "Mirna",
+        "amount": 150000,
+        "description": "Pembayaran Invoice #INV-2024-015",
+        "reference_id": "INV-2024-015"
+    }
 }
 ```
 
@@ -138,14 +159,24 @@ Content-Type: application/json
 
 ```json
 {
-  "virtual_account_number": "0141234567890",
-  "customer_name": "John Doe",
-  "amount": 250000,
-  "status": "ACTIVE",
-  "expired_at": "2026-12-31T23:59:59Z"
+    "status": "VA_SUCCESS",
+    "response_code": "VA-0000",
+    "message": "Create VA Success",
+    "payload": {
+        "id": "ba1ac6bb-87a3-4592-8f22-02b128fd1c9c",
+        "va_number": "8808202606260848495802",
+        "customer_id": "CUST-001",
+        "customer_name": "Mirna",
+        "amount": 150000,
+        "description": "Pembayaran Invoice #INV-2024-015",
+        "reference_id": "INV-2024-015",
+        "expired_at": "2026-06-27T08:48:49.415589+07:00",
+        "created_at": "2026-06-26T08:48:49.415589+07:00",
+        "status": "PENDING"
+    }
 }
 ```
 
 ## License
 
-This project is intended for learning purposes and portfolio demonstration.
+This project is intended for portfolio demonstration.
