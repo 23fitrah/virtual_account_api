@@ -1,147 +1,151 @@
-# Virtual Account Payment System — Project Documentation
+# Virtual Account API
 
-## 1. Project Overview
+RESTful API for managing Virtual Account transactions, built with Golang using a clean architecture approach. This project provides endpoints to create virtual accounts, retrieve account details, process payments, and monitor transaction status.
 
-Project ini bertujuan untuk membangun sistem **Virtual Account (VA)** yang memungkinkan nasabah atau pelanggan melakukan pembayaran melalui nomor rekening unik yang di-generate khusus untuk setiap transaksi atau setiap pelanggan. Sistem ini menjadi jembatan antara aplikasi merchant/bisnis dengan pihak bank atau payment gateway, sehingga proses rekonsiliasi pembayaran dapat dilakukan secara otomatis dan real-time.
+## Features
 
-Dokumentasi ini disusun dari sudut pandang System Analyst, mencakup business requirement, business flow, system flow, hingga kebutuhan fungsional dan non-fungsional yang menjadi acuan bagi tim development.
+* Create Virtual Account
+* Get Virtual Account Status
+* Get List Virtual Account
+* Process Payment
+* Transaction Payment History
 
-## 2. Business Background
+## Tech Stack
 
-Saat ini proses pembayaran manual (transfer bank biasa) menyulitkan proses rekonsiliasi karena petugas finance harus mencocokkan satu per satu mutasi rekening dengan invoice yang ada. Hal ini menyebabkan:
+* Go (Golang)
+* Gin Framework
+* SQL Server
+* Elasticsearch
+* Redis
+* GORM
+* Docker Container
+* Unit Test
 
-- Proses konfirmasi pembayaran lambat (manual checking)
-- Risiko human error dalam pencocokan data
-- Customer experience kurang baik karena status order tidak update otomatis
-
-Dengan Virtual Account, setiap transaksi/customer mendapatkan nomor rekening unik, sehingga sistem dapat melakukan auto-reconciliation begitu pembayaran masuk.
-
-## 3. Objectives
-
-- Menyediakan nomor Virtual Account unik untuk setiap transaksi atau pelanggan
-- Melakukan otomatisasi proses konfirmasi pembayaran (callback/notification dari bank)
-- Mengintegrasikan sistem internal dengan API bank/payment gateway
-- Menyediakan dashboard monitoring status pembayaran
-- Memastikan keamanan data transaksi sesuai standar perbankan
-
-## 4. Scope
-
-**In Scope**
-- Generate VA number (closed/open payment)
-- Integrasi dengan bank/payment gateway (create VA, inquiry, payment notification)
-- Callback handler untuk update status pembayaran
-- Auto-expire VA number sesuai waktu yang ditentukan
-- Reporting & reconciliation
-
-**Out of Scope**
-- Proses refund manual ke rekening sumber
-- Integrasi dengan metode pembayaran selain VA (e-wallet, QRIS, dll) — akan dibahas di project terpisah
-
-## 5. Actors
-
-| Actor | Deskripsi |
-|---|---|
-| Customer | Pihak yang melakukan pembayaran melalui VA |
-| Merchant/Internal System | Sistem yang melakukan request pembuatan VA |
-| Bank/Payment Gateway | Pihak ketiga penyedia layanan VA |
-| Finance/Admin | Melakukan monitoring dan rekonsiliasi transaksi |
-
-## 6. Business Flow
-
-1. Customer melakukan order/transaksi pada sistem merchant
-2. Sistem internal mengirimkan request pembuatan VA ke Bank/Payment Gateway
-3. Bank mengembalikan nomor VA beserta masa berlakunya
-4. Customer melakukan pembayaran ke nomor VA tersebut melalui ATM/mobile banking
-5. Bank mengirimkan notifikasi pembayaran (callback) ke sistem internal
-6. Sistem internal memverifikasi dan mengupdate status transaksi menjadi "Paid"
-7. Sistem mengirimkan notifikasi ke customer (email/SMS/push notification)
-
-## 7. System Flow / Sequence
+## Project Structure
 
 ```
-Customer -> Internal System : Create Order
-Internal System -> Bank API : Request Create VA
-Bank API -> Internal System : Response (VA Number, Expired Date)
-Internal System -> Customer : Display VA Number
-Customer -> Bank Channel : Pay via VA
-Bank -> Internal System : Callback Notification (Payment Success)
-Internal System -> Internal System : Update Order Status
-Internal System -> Customer : Send Payment Confirmation
+.
+├── cmd/
+├── config/
+├── constants/
+├── internal/
+│   ├── handler/
+|   ├── injector/
+|   ├── middleware/
+|   ├── providers/
+|   ├── repositories/
+│   ├── routes/
+│   ├── services/
+│   ├── validations/
+├── logs/
+├── models/
+├── resources/
+├── tests/
+├── utils/
+├── Dockerfile
+├── docker-compose.yml
+├── go.mod
+└── README.md
 ```
 
-## 8. Functional Requirements
+## API Endpoints
 
-| ID | Requirement | Priority |
-|---|---|---|
-| FR-01 | Sistem dapat melakukan generate VA number otomatis | High |
-| FR-02 | Sistem dapat menerima callback notification dari bank | High |
-| FR-03 | Sistem dapat melakukan validasi signature/checksum pada callback | High |
-| FR-04 | Sistem dapat menampilkan status transaksi (Pending/Paid/Expired) | High |
-| FR-05 | Sistem dapat melakukan auto-expire VA sesuai waktu yang ditentukan | Medium |
-| FR-06 | Sistem dapat melakukan retry mechanism jika callback gagal diproses | Medium |
-| FR-07 | Sistem menyediakan reporting transaksi harian | Low |
+| Method | Endpoint                               | Description                     |
+| ------ | --------------------------------------- | -------------------------------- |
+| POST   | `/api/v1/virtual-accounts/create`             | Create a new Virtual Account    |
+| POST   | `/api/v1/virtual-accounts/:va_number`        | Get Virtual Account Status information |
+| POST   | `/api/v1/virtual-accounts?page=1&limit=10&customer_id=&status=`        | Get List Virtual Account |
+| POST   | `/api/v1/virtual-accounts/payments`     | Process payment                 |
+| POST   | `/api/v1/payments/history?page=1&limit=10&status=`                 | Get transaction history         |
 
-## 9. Non-Functional Requirements
+## Getting Started
 
-| ID | Requirement |
-|---|---|
-| NFR-01 | Response time API create VA maksimal 2 detik |
-| NFR-02 | Sistem harus mendukung high availability (uptime ≥ 99.9%) |
-| NFR-03 | Callback dari bank harus diproses secara idempotent (anti duplicate processing) |
-| NFR-04 | Semua komunikasi API harus menggunakan HTTPS/TLS |
-| NFR-05 | Data transaksi sensitif harus terenkripsi (at-rest & in-transit) |
-| NFR-06 | Sistem harus memiliki audit trail untuk setiap perubahan status transaksi |
+### Clone Repository
 
-## 10. Data Model (Simplified ERD)
+```bash
+git clone https://github.com/yourusername/virtual-account-api.git
+cd virtual-account-api
+```
 
-**Table: virtual_accounts**
-- id
-- order_id (FK)
-- va_number
-- bank_code
-- amount
-- status (PENDING, PAID, EXPIRED) x
-- expired_at
-- created_at
+### Install Dependencies
 
-**Table: payment_callbacks**
-- id
-- va_id (FK)
-- raw_payload
-- signature
-- processed_at
-- status
+```bash
+go mod tidy
+```
 
+### Configure Environment
 
-## 11. API List
+Create a `.env` file.
 
-| Method | Endpoint | Deskripsi |
-|---|---|---|
-| POST | /api/v1/virtual-accounts | Membuat VA baru untuk sebuah order |
-| GET | /api/v1/virtual-accounts/{id} | Mengecek status VA |
-| POST | /api/v1/callback/payment | Endpoint untuk menerima notifikasi pembayaran dari bank |
-| GET | /api/v1/transactions | Mendapatkan daftar transaksi (untuk reporting) |
+```env
+APP_PORT=8080
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=virtual_account
+DB_USER=postgres
+DB_PASSWORD=password
+```
 
-## 12. Assumptions & Constraints
+### Run Application
 
-- Pihak bank/payment gateway sudah menyediakan API dokumentasi resmi (sandbox & production)
-- Format dan struktur callback payload mengikuti standar dari masing-masing bank
-- Proses settlement dana ke rekening merchant dilakukan oleh pihak bank, di luar tanggung jawab sistem internal
+```bash
+go run cmd/main.go
+```
 
-## 13. Tech Stack
+or
 
-- Backend: Golang / C# .NET / Laravel-Lumen
-- Database: PostgreSQL / MySQL
-- Message Broker: RabbitMQ / Kafka (untuk async callback processing)
-- Containerization: Docker
-- CI/CD: GitLab CI / GitHub Actions
-- Monitoring: Prometheus + Grafana
+```bash
+docker-compose up --build
+```
 
-## 14. Glossary
+## Running Tests
 
-| Term | Deskripsi |
-|---|---|
-| VA | Virtual Account, nomor rekening unik untuk menerima pembayaran |
-| Callback | Notifikasi yang dikirim bank ke sistem internal saat pembayaran terjadi |
-| Reconciliation | Proses pencocokan data transaksi dengan mutasi rekening |
-| Idempotent | Proses yang aman dijalankan berulang kali tanpa menimbulkan efek ganda |
+```bash
+go test ./...
+```
+
+To check test coverage:
+
+```bash
+go test ./... -cover
+```
+
+## API Documentation
+
+If Swagger is enabled:
+
+```
+http://localhost:8080/swagger/index.html
+```
+
+## Sample Request
+
+```http
+POST /api/v1/virtual-accounts
+Content-Type: application/json
+```
+
+```json
+{
+  "customer_name": "John Doe",
+  "bank_code": "014",
+  "amount": 250000,
+  "expired_at": "2026-12-31T23:59:59Z"
+}
+```
+
+## Sample Response
+
+```json
+{
+  "virtual_account_number": "0141234567890",
+  "customer_name": "John Doe",
+  "amount": 250000,
+  "status": "ACTIVE",
+  "expired_at": "2026-12-31T23:59:59Z"
+}
+```
+
+## License
+
+This project is intended for learning purposes and portfolio demonstration.
